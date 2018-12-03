@@ -1,5 +1,5 @@
 {
-    "name": "sensio/generator-bundle",
+    "name": "kunstmaan/sensio-generator-bundle",
     "description": "This bundle generates code for you",
     "keywords": [],
     "type": "symfony-bundle",
@@ -11,16 +11,16 @@
         }
     ],
     "require": {
-        "symfony/framework-bundle": "~2.7|~3.0",
-        "symfony/console": "~2.7|~3.0",
-        "symfony/process": "~2.7|~3.0",
-        "symfony/yaml": "~2.7|~3.0",
+        "symfony/framework-bundle": "~2.7|~3.0|^4.0",
+        "symfony/console": "~2.7|~3.0|^4.0",
+        "symfony/process": "~2.7|~3.0|^4.0",
+        "symfony/yaml": "~2.7|~3.0|^4.0",
         "twig/twig": "^1.28.2|^2.0"
     },
     "require-dev": {
-        "symfony/doctrine-bridge": "~2.7|~3.0",
-        "symfony/filesystem": "~2.7|~3.0",
-        "symfony/phpunit-bridge": "^3.3",
+        "symfony/doctrine-bridge": "~2.7|~3.0|^4.0",
+        "symfony/filesystem": "~2.7|~3.0|^4.0",
+        "symfony/phpunit-bridge": "^3.3|^4.0",
         "doctrine/orm": "~2.4"
     },
     "autoload": {
@@ -28,6 +28,9 @@
         "exclude-from-classmap": [
             "/Tests/"
         ]
+    },
+    "replace": {
+        "sensio/generator-bundle": "*"
     },
     "minimum-stability": "dev",
     "extra": {
