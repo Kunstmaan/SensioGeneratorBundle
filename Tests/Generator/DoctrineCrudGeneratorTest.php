@@ -48,7 +48,7 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             'public function editAction',
         );
         foreach ($strings as $string) {
-            $this->assertContains($string, $content);
+            $this->assertStringContainsString($string, $content);
         }
     }
 
@@ -83,7 +83,7 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             'public function showAction',
         );
         foreach ($strings as $string) {
-            $this->assertContains($string, $content);
+            $this->assertStringContainsString($string, $content);
         }
 
         $content = file_get_contents($this->tmpDir.'/Controller/PostController.php');
@@ -93,7 +93,7 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             '@Route',
         );
         foreach ($strings as $string) {
-            $this->assertNotContains($string, $content);
+            $this->assertStringNotContainsString($string, $content);
         }
     }
 
@@ -131,7 +131,7 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             '@Route',
         );
         foreach ($strings as $string) {
-            $this->assertContains($string, $content);
+            $this->assertStringContainsString($string, $content);
         }
     }
 
@@ -169,7 +169,7 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             '@Route("/{id}", name="post_show")',
         );
         foreach ($strings as $string) {
-            $this->assertContains($string, $content);
+            $this->assertStringContainsString($string, $content);
         }
 
         $content = file_get_contents($this->tmpDir.'/Controller/PostController.php');
@@ -178,7 +178,7 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             'public function editAction',
         );
         foreach ($strings as $string) {
-            $this->assertNotContains($string, $content);
+            $this->assertStringNotContainsString($string, $content);
         }
     }
 
@@ -220,7 +220,7 @@ class DoctrineCrudGeneratorTest extends GeneratorTest
             $strings[] = '$editForm = $this->createForm(new PostType(), $post);';
         }
         foreach ($strings as $string) {
-            $this->assertContains($string, $content);
+            $this->assertStringContainsString($string, $content);
         }
     }
 

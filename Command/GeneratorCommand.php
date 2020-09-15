@@ -11,8 +11,10 @@
 
 namespace Sensio\Bundle\GeneratorBundle\Command;
 
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Sensio\Bundle\GeneratorBundle\Generator\Generator;
 use Sensio\Bundle\GeneratorBundle\Command\Helper\QuestionHelper;
 
@@ -21,8 +23,13 @@ use Sensio\Bundle\GeneratorBundle\Command\Helper\QuestionHelper;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
-abstract class GeneratorCommand extends ContainerAwareCommand
+abstract class GeneratorCommand extends Command implements ContainerAwareInterface
 {
+    /**
+     * @var ContainerInterface|null
+     */
+    private $container;
+
     /**
      * @var Generator
      */
@@ -86,5 +93,29 @@ abstract class GeneratorCommand extends ContainerAwareCommand
         $projectRootDir = dirname($this->getContainer()->getParameter('kernel.root_dir'));
 
         return str_replace($projectRootDir.'/', '', realpath($absolutePath) ?: $absolutePath);
+    }
+
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
+
+    /**
+     * @return ContainerInterface
+     *
+     * @throws \LogicException
+     */
+    protected function getContainer()
+    {
+        if (null === $this->container) {
+            $application = $this->getApplication();
+            if (null === $application) {
+                throw new \LogicException('The container cannot be retrieved as the application instance is not yet set.');
+            }
+
+            $this->container = $application->getKernel()->getContainer();
+        }
+
+        return $this->container;
     }
 }

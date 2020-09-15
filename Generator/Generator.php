@@ -11,7 +11,10 @@
 
 namespace Sensio\Bundle\GeneratorBundle\Generator;
 
+use http\Env;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Twig\Environment;
+use Twig\Loader\FilesystemLoader;
 
 /**
  * Generator is the base class for all generators.
@@ -46,11 +49,11 @@ class Generator
     /**
      * Gets the twig environment that will render skeletons.
      *
-     * @return \Twig_Environment
+     * @return Environment
      */
     protected function getTwigEnvironment()
     {
-        return new \Twig_Environment(new \Twig_Loader_Filesystem($this->skeletonDirs), array(
+        return new Environment(new FilesystemLoader($this->skeletonDirs), array(
             'debug' => true,
             'cache' => false,
             'strict_variables' => true,

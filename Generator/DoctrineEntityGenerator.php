@@ -11,10 +11,11 @@
 
 namespace Sensio\Bundle\GeneratorBundle\Generator;
 
+use Doctrine\Inflector\InflectorFactory;
 use Sensio\Bundle\GeneratorBundle\Model\EntityGeneratorResult;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
-use Symfony\Bridge\Doctrine\RegistryInterface;
+use Doctrine\Persistence\ManagerRegistry;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Tools\EntityGenerator;
 use Doctrine\ORM\Tools\EntityRepositoryGenerator;
@@ -32,7 +33,7 @@ class DoctrineEntityGenerator extends Generator
     private $filesystem;
     private $registry;
 
-    public function __construct(Filesystem $filesystem, RegistryInterface $registry)
+    public function __construct(Filesystem $filesystem, ManagerRegistry $registry)
     {
         $this->filesystem = $filesystem;
         $this->registry = $registry;
@@ -73,8 +74,9 @@ class DoctrineEntityGenerator extends Generator
 
         $entityGenerator = $this->getEntityGenerator();
         if ('annotation' === $format) {
+            $inflector = InflectorFactory::create()->build();
             $entityGenerator->setGenerateAnnotations(true);
-            $class->setPrimaryTable(array('name' => Inflector::tableize(str_replace('\\', '', $entity))));
+            $class->setPrimaryTable(array('name' => $inflector->tableize(str_replace('\\', '', $entity))));
             $entityCode = $entityGenerator->generateEntityClass($class);
             $mappingPath = $mappingCode = false;
         } else {

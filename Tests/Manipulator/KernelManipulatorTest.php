@@ -62,8 +62,6 @@ class KernelManipulatorTest extends GeneratorTest
         }
         if ($useProcess) {
             $process = new Process($arguments);
-            // preserve the BC with symfony <3.3
-            $process->setCommandLine($process->getCommandLine());
         } else {
             $pb = new ProcessBuilder($arguments);
             $process = $pb->getProcess();

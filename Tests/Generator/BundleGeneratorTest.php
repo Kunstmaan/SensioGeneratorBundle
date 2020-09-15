@@ -36,17 +36,17 @@ class BundleGeneratorTest extends GeneratorTest
         }
 
         $content = file_get_contents($this->tmpDir.'/Foo/BarBundle/FooBarBundle.php');
-        $this->assertContains('namespace Foo\\BarBundle', $content);
+        $this->assertStringContainsString('namespace Foo\\BarBundle', $content);
 
         $content = file_get_contents($this->tmpDir.'/Foo/BarBundle/Controller/DefaultController.php');
-        $this->assertContains('public function indexAction', $content);
-        $this->assertNotContains('@Route("/hello/{name}"', $content);
+        $this->assertStringContainsString('public function indexAction', $content);
+        $this->assertStringNotContainsString('@Route("/hello/{name}"', $content);
 
         $content = file_get_contents($this->tmpDir.'/Foo/BarBundle/Resources/views/Default/index.html.twig');
-        $this->assertContains('Hello World!', $content);
+        $this->assertStringContainsString('Hello World!', $content);
 
         $content = file_get_contents($this->tmpDir.'/Foo/BarBundle/Resources/config/services.yml');
-        $this->assertContains('class: Foo\BarBundle\Example', $content);
+        $this->assertStringContainsString('class: Foo\BarBundle\Example', $content);
     }
 
     public function testGenerateXml()
@@ -69,7 +69,7 @@ class BundleGeneratorTest extends GeneratorTest
         }
 
         $content = file_get_contents($this->tmpDir.'/Foo/BarBundle/Resources/config/services.xml');
-        $this->assertContains('<service id="foo_bar.example" class="Foo\BarBundle\Example">', $content);
+        $this->assertStringContainsString('<service id="foo_bar.example" class="Foo\BarBundle\Example">', $content);
     }
 
     public function testGenerateAnnotation()
@@ -81,7 +81,7 @@ class BundleGeneratorTest extends GeneratorTest
         $this->assertFalse(file_exists($this->tmpDir.'/Foo/BarBundle/Resources/config/routing.xml'));
 
         $content = file_get_contents($this->tmpDir.'/Foo/BarBundle/Controller/DefaultController.php');
-        $this->assertContains('@Route("/")', $content);
+        $this->assertStringContainsString('@Route("/")', $content);
     }
 
     public function testDirIsFile()

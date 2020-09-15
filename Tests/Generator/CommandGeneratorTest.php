@@ -32,7 +32,7 @@ class CommandGeneratorTest extends GeneratorTest
             sprintf("->setName('%s')", $commandName),
         );
         foreach ($strings as $string) {
-            $this->assertContains($string, $commandContent);
+            $this->assertStringContainsString($string, $commandContent);
         }
     }
 

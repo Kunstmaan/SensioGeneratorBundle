@@ -91,13 +91,6 @@ EOT
 
                 return 1;
             }
-        } else {
-            // BC to be removed in 4.0
-            if ($input->hasOption('entity') && $entityOption = $input->getOption('entity')) {
-                @trigger_error('Using the "--entity" option has been deprecated since version 3.0 and will be removed in 4.0. Pass it as argument instead.', E_USER_DEPRECATED);
-
-                $input->setArgument('entity', $entityOption);
-            }
         }
 
         $entity = Validators::validateEntityName($input->getArgument('entity'));
@@ -142,6 +135,8 @@ EOT
         }
 
         $questionHelper->writeGeneratorSummary($output, $errors);
+
+        return 0;
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
@@ -158,12 +153,6 @@ EOT
             '(use the shortcut notation like <comment>AcmeBlogBundle:Post</comment>)',
             '',
         ));
-
-        if ($input->hasOption('entity') && $entityOption = $input->getOption('entity')) {
-            @trigger_error('Using the "--entity" option has been deprecated since version 3.0 and will be removed in 4.0. Pass it as argument instead.', E_USER_DEPRECATED);
-
-            $input->setArgument('entity', $entityOption);
-        }
 
         $question = new Question($questionHelper->getQuestion('The Entity shortcut name', $input->getArgument('entity')), $input->getArgument('entity'));
         $question->setValidator(array('Sensio\Bundle\GeneratorBundle\Command\Validators', 'validateEntityName'));

@@ -11,10 +11,11 @@
 
 namespace Sensio\Bundle\GeneratorBundle\Generator;
 
+use Doctrine\Inflector\Inflector;
+use Doctrine\Inflector\InflectorFactory;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\Common\Inflector\Inflector;
 
 /**
  * Generates a CRUD controller.
@@ -68,12 +69,13 @@ class DoctrineCrudGenerator extends Generator
             throw new \RuntimeException('The CRUD generator does not support entity classes with multiple or no primary keys.');
         }
 
+        $inflector = InflectorFactory::create()->build();
         $this->entity = $entity;
         $entity = str_replace('\\', '/', $entity);
         $entityParts = explode('/', $entity);
         $entityName = end($entityParts);
-        $this->entitySingularized = lcfirst(Inflector::singularize($entityName));
-        $this->entityPluralized = lcfirst(Inflector::pluralize($entityName));
+        $this->entitySingularized = lcfirst($inflector->singularize($entityName));
+        $this->entityPluralized = lcfirst($inflector->pluralize($entityName));
         $this->bundle = $bundle;
         $this->metadata = $metadata;
         $this->setFormat($format);

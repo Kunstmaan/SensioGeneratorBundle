@@ -76,13 +76,6 @@ EOT
     {
         $questionHelper = $this->getQuestionHelper();
 
-        // BC to be removed in 4.0
-        if (!$input->isInteractive() && $input->hasOption('entity') && $entityOption = $input->getOption('entity')) {
-            @trigger_error('Using the "--entity" option has been deprecated since version 3.0 and will be removed in 4.0. Pass it as argument instead.', E_USER_DEPRECATED);
-
-            $input->setArgument('entity', $entityOption);
-        }
-
         $entity = Validators::validateEntityName($input->getArgument('entity'));
         list($bundle, $entity) = $this->parseShortcutNotation($entity);
         $format = Validators::validateFormat($input->getOption('format'));
@@ -112,6 +105,8 @@ EOT
         }
 
         $questionHelper->writeGeneratorSummary($output, array());
+
+        return 0;
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)
@@ -128,12 +123,6 @@ EOT
             'You must use the shortcut notation like <comment>AcmeBlogBundle:Post</comment>.',
             '',
         ));
-
-        if ($input->hasOption('entity') && $entityOption = $input->getOption('entity')) {
-            @trigger_error('Using the "--entity" option has been deprecated since version 3.0 and will be removed in 4.0. Pass it as argument instead.', E_USER_DEPRECATED);
-
-            $input->setArgument('entity', $entityOption);
-        }
 
         $bundleNames = array_keys($this->getContainer()->get('kernel')->getBundles());
 

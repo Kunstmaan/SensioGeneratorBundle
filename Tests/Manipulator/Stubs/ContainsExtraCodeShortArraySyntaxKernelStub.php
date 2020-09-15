@@ -11,12 +11,12 @@
 
 namespace KernelManipulatorTest\Stubs;
 
-use Symfony\Component\HttpKernel\Tests\Fixtures\KernelForTest;
+use Manipulator\Stubs\KernelForTest;
 use Sensio\Bundle\GeneratorBundle\Tests\Manipulator\Stubs\StubBundle;
 
 class ContainsExtraCodeShortArraySyntaxKernelStub extends KernelForTest
 {
-    public function registerBundles()
+    public function registerBundles(): iterable
     {
         $someVariable = false;
 

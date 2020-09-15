@@ -108,6 +108,8 @@ EOT
         }
 
         $questionHelper->writeGeneratorSummary($output, $errors);
+
+        return 0;
     }
 
     protected function interact(InputInterface $input, OutputInterface $output)

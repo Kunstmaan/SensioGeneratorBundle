@@ -22,14 +22,14 @@ class DoctrineFormGeneratorTest extends GeneratorTest
         $this->assertTrue(file_exists($this->tmpDir.'/Form/PostType.php'));
 
         $content = file_get_contents($this->tmpDir.'/Form/PostType.php');
-        $this->assertContains('namespace Foo\BarBundle\Form', $content);
-        $this->assertContains('class PostType extends AbstractType', $content);
-        $this->assertContains('->add(\'title\')', $content);
-        $this->assertContains('->add(\'createdAt\')', $content);
-        $this->assertContains('->add(\'publishedAt\')', $content);
-        $this->assertContains('->add(\'updatedAt\')', $content);
-        $this->assertContains('public function configureOptions(OptionsResolver $resolver)', $content);
-        $this->assertContains('\'data_class\' => \'Foo\BarBundle\Entity\Post\'', $content);
+        $this->assertStringContainsString('namespace Foo\BarBundle\Form', $content);
+        $this->assertStringContainsString('class PostType extends AbstractType', $content);
+        $this->assertStringContainsString('->add(\'title\')', $content);
+        $this->assertStringContainsString('->add(\'createdAt\')', $content);
+        $this->assertStringContainsString('->add(\'publishedAt\')', $content);
+        $this->assertStringContainsString('->add(\'updatedAt\')', $content);
+        $this->assertStringContainsString('public function configureOptions(OptionsResolver $resolver)', $content);
+        $this->assertStringContainsString('\'data_class\' => \'Foo\BarBundle\Entity\Post\'', $content);
     }
 
     public function testGenerateSubNamespacedEntity()
@@ -39,31 +39,23 @@ class DoctrineFormGeneratorTest extends GeneratorTest
         $this->assertTrue(file_exists($this->tmpDir.'/Form/Blog/PostType.php'));
 
         $content = file_get_contents($this->tmpDir.'/Form/Blog/PostType.php');
-        $this->assertContains('namespace Foo\BarBundle\Form\Blog', $content);
-        $this->assertContains('class PostType extends AbstractType', $content);
-        $this->assertContains('->add(\'title\')', $content);
-        $this->assertContains('->add(\'createdAt\')', $content);
-        $this->assertContains('->add(\'publishedAt\')', $content);
-        $this->assertContains('->add(\'updatedAt\')', $content);
-        $this->assertContains('public function configureOptions(OptionsResolver $resolver)', $content);
-        $this->assertContains('\'data_class\' => \'Foo\BarBundle\Entity\Blog\Post\'', $content);
-        $this->assertContains('public function getBlockPrefix()', $content);
-        $this->assertContains('return \'foo_barbundle_blog_post\';', $content);
-        if (method_exists('Symfony\Component\Form\AbstractType', 'getBlockPrefix')) {
-            // Symfony >= 2.8
-            $this->assertNotContains('public function getName()', $content);
-        } else {
-            // BC Symfony 2.7
-            $this->assertContains('public function getName()', $content);
-        }
+        $this->assertStringContainsString('namespace Foo\BarBundle\Form\Blog', $content);
+        $this->assertStringContainsString('class PostType extends AbstractType', $content);
+        $this->assertStringContainsString('->add(\'title\')', $content);
+        $this->assertStringContainsString('->add(\'createdAt\')', $content);
+        $this->assertStringContainsString('->add(\'publishedAt\')', $content);
+        $this->assertStringContainsString('->add(\'updatedAt\')', $content);
+        $this->assertStringContainsString('public function configureOptions(OptionsResolver $resolver)', $content);
+        $this->assertStringContainsString('\'data_class\' => \'Foo\BarBundle\Entity\Blog\Post\'', $content);
+        $this->assertStringContainsString('public function getBlockPrefix()', $content);
+        $this->assertStringContainsString('return \'foo_barbundle_blog_post\';', $content);
+        $this->assertStringContainsString('public function getName()', $content);
     }
 
-    /**
-     * @expectedException \RuntimeException
-     * @expectedExceptionMessageRegExp: Unable to generate the PostType form class as it already exists under the .* file
-     */
     public function testNonOverwrittenForm()
     {
+        $this->expectExceptionMessageMatches('/Unable to generate the PostType form class as it already exists under the (.+) file/');
+        $this->expectException(\RuntimeException::class);
         $this->generateForm(false);
         $this->generateForm(false);
     }
