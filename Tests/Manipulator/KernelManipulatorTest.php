@@ -60,15 +60,8 @@ class KernelManipulatorTest extends GeneratorTest
                 $useProcess = false;
             }
         }
-        if ($useProcess) {
-            $process = new Process($arguments);
-            // preserve the BC with symfony <3.3
-            $process->setCommandLine($process->getCommandLine());
-        } else {
-            $pb = new ProcessBuilder($arguments);
-            $process = $pb->getProcess();
-        }
 
+        $process = new Process($arguments);
         $process->run();
 
         $result = strpos($process->getOutput(), 'No syntax errors detected');

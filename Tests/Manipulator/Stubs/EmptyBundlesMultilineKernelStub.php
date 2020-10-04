@@ -11,11 +11,11 @@
 
 namespace KernelManipulatorTest\Stubs;
 
-use Symfony\Component\HttpKernel\Tests\Fixtures\KernelForTest;
+use Manipulator\Stubs\KernelForTest;
 
 class EmptyBundlesMultilineKernelStub extends KernelForTest
 {
-    public function registerBundles()
+    public function registerBundles(): iterable
     {
         $bundles = array(
 

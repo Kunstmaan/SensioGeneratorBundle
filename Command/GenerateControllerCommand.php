@@ -117,6 +117,8 @@ EOT
         $output->writeln('Generating the bundle code: <info>OK</info>');
 
         $questionHelper->writeGeneratorSummary($output, array());
+
+        return 0;
     }
 
     public function interact(InputInterface $input, OutputInterface $output)

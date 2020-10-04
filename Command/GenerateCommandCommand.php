@@ -158,6 +158,8 @@ EOT
 
         $output->writeln(sprintf('Generated the <info>%s</info> command in <info>%s</info>', $name, $bundle->getName()));
         $questionHelper->writeGeneratorSummary($output, array());
+
+        return 0;
     }
 
     protected function createGenerator()

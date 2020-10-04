@@ -11,6 +11,7 @@
 
 namespace Sensio\Bundle\GeneratorBundle\Tests\Command;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Symfony\Component\Console\Tester\CommandTester;
 
 class GenerateDoctrineCrudCommandTest extends GenerateCommandTest
@@ -20,7 +21,28 @@ class GenerateDoctrineCrudCommandTest extends GenerateCommandTest
      */
     public function testInteractiveCommand($options, $input, $expected)
     {
-        list($entity, $format, $prefix, $withWrite) = $expected;
+        [$entity, $format, $prefix, $withWrite] = $expected;
+
+        $generator = $this->getGenerator();
+        $generator
+            ->expects($this->once())
+            ->method('generate')
+            ->with($this->getBundle(), $entity, $this->getDoctrineMetadata(), $format, $prefix, $withWrite)
+        ;
+
+        $tester = new CommandTester($command = $this->getCommand($generator));
+        $this->setInputs($tester, $command, $input);
+        $tester->execute($options);
+    }
+
+    /**
+     * @group legacy
+     * @expectedDeprecation Using the "--entity" option has been deprecated since version 3.0 and will be removed in 4.0. Pass it as argument instead.
+     * @dataProvider getLegacyInteractiveCommandData
+     */
+    public function testLegacyInteractiveCommand($options, $input, $expected)
+    {
+        [$entity, $format, $prefix, $withWrite] = $expected;
 
         $generator = $this->getGenerator();
         $generator
@@ -43,7 +65,13 @@ class GenerateDoctrineCrudCommandTest extends GenerateCommandTest
             array(array('entity' => 'AcmeBlogBundle:Blog/Post'), "\ny\nyml\nfoobar\n", array('Blog\\Post', 'yml', 'foobar', true)),
             array(array('entity' => 'AcmeBlogBundle:Blog/Post'), '', array('Blog\\Post', 'annotation', 'blog_post', false)),
             array(array('entity' => 'AcmeBlogBundle:Blog/Post', '--format' => 'yml', '--route-prefix' => 'foo', '--with-write' => true), '', array('Blog\\Post', 'yml', 'foo', true)),
-            // Deprecated, to be removed in 4.0
+
+        );
+    }
+
+    public function getLegacyInteractiveCommandData()
+    {
+        return array(
             array(array('--entity' => 'AcmeBlogBundle:Blog/Post'), '', array('Blog\\Post', 'annotation', 'blog_post', false)),
             array(array('--entity' => 'AcmeBlogBundle:Blog/Post', '--format' => 'yml', '--route-prefix' => 'foo', '--with-write' => true), '', array('Blog\\Post', 'yml', 'foo', true)),
 
@@ -55,7 +83,27 @@ class GenerateDoctrineCrudCommandTest extends GenerateCommandTest
      */
     public function testNonInteractiveCommand($options, $expected)
     {
-        list($entity, $format, $prefix, $withWrite) = $expected;
+        [$entity, $format, $prefix, $withWrite] = $expected;
+
+        $generator = $this->getGenerator();
+        $generator
+            ->expects($this->once())
+            ->method('generate')
+            ->with($this->getBundle(), $entity, $this->getDoctrineMetadata(), $format, $prefix, $withWrite)
+        ;
+
+        $tester = new CommandTester($this->getCommand($generator));
+        $tester->execute($options, array('interactive' => false));
+    }
+
+    /**
+     * @group legacy
+     * @expectedDeprecation Using the "--entity" option has been deprecated since version 3.0 and will be removed in 4.0. Pass it as argument instead.
+     * @dataProvider getLegacyNonInteractiveCommandData
+     */
+    public function testLegacyNonInteractiveCommand($options, $expected)
+    {
+        [$entity, $format, $prefix, $withWrite] = $expected;
 
         $generator = $this->getGenerator();
         $generator
@@ -73,7 +121,12 @@ class GenerateDoctrineCrudCommandTest extends GenerateCommandTest
         return array(
             array(array('entity' => 'AcmeBlogBundle:Blog/Post'), array('Blog\\Post', 'annotation', 'blog_post', false)),
             array(array('entity' => 'AcmeBlogBundle:Blog/Post', '--format' => 'yml', '--route-prefix' => 'foo', '--with-write' => true), array('Blog\\Post', 'yml', 'foo', true)),
-            // Deprecated, to be removed in 4.0
+        );
+    }
+
+    public function getLegacyNonInteractiveCommandData()
+    {
+        return array(
             array(array('--entity' => 'AcmeBlogBundle:Blog/Post'), array('Blog\\Post', 'annotation', 'blog_post', false)),
             array(array('--entity' => 'AcmeBlogBundle:Blog/Post', '--format' => 'yml', '--route-prefix' => 'foo', '--with-write' => true), array('Blog\\Post', 'yml', 'foo', true)),
         );
@@ -96,7 +149,7 @@ DATA;
         $input = "AcmeBlogBundle:Blog/Post\ny\nannotation\n/foobar\n";
         $expected = array('Blog\\Post', 'annotation', 'foobar', true);
 
-        list($entity, $format, $prefix, $withWrite) = $expected;
+        [$entity, $format, $prefix, $withWrite] = $expected;
 
         $generator = $this->getGenerator();
         $generator
@@ -109,7 +162,7 @@ DATA;
         $this->setInputs($tester, $command, $input);
         $tester->execute($options);
 
-        $this->assertContains('acme_blog_post:', file_get_contents($rootDir.'/config/routing.yml'));
+        $this->assertStringContainsString('acme_blog_post:', file_get_contents($rootDir.'/config/routing.yml'));
     }
 
     public function testCreateCrudWithAnnotationInAnnotationBundle()
@@ -129,7 +182,7 @@ DATA;
         $input = "AcmeBlogBundle:Blog/Post\ny\nyml\n/foobar\n";
         $expected = array('Blog\\Post', 'yml', 'foobar', true);
 
-        list($entity, $format, $prefix, $withWrite) = $expected;
+        [$entity, $format, $prefix, $withWrite] = $expected;
 
         $generator = $this->getGenerator();
         $generator
@@ -162,7 +215,7 @@ DATA;
         $input = "AcmeBlogBundle:Blog/Post\ny\nannotation\n/foobar\n";
         $expected = array('Blog\\Post', 'annotation', 'foobar', true);
 
-        list($entity, $format, $prefix, $withWrite) = $expected;
+        [$entity, $format, $prefix, $withWrite] = $expected;
 
         $generator = $this->getGenerator();
         $generator
@@ -177,7 +230,7 @@ DATA;
 
         $expected = '@AcmeBlogBundle/Controller/PostController.php';
 
-        $this->assertContains($expected, file_get_contents($rootDir.'/config/routing.yml'));
+        $this->assertStringContainsString($expected, file_get_contents($rootDir.'/config/routing.yml'));
     }
 
     protected function getCommand($generator)
@@ -282,7 +335,7 @@ DATA;
             ->will($this->returnValue($configuration))
         ;
 
-        $registry = $this->getMockBuilder('Symfony\Bridge\Doctrine\RegistryInterface')->getMock();
+        $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
         $registry
             ->expects($this->any())
             ->method('getAliasNamespace')

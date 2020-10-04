@@ -37,18 +37,46 @@ class GenerateDoctrineEntityCommandTest extends GenerateCommandTest
         $tester->execute($options);
     }
 
+    /**
+     * @group legacy
+     * @expectedDeprecation Using the "--entity" option has been deprecated since version 3.0 and will be removed in 4.0. Pass it as argument instead.
+     * @dataProvider getLegacyInteractiveCommandData
+     */
+    public function testLegacyInteractiveCommand($options, $input, $expected)
+    {
+        list($entity, $format, $fields) = $expected;
+
+        $generator = $this->getGenerator();
+        $generator
+            ->expects($this->once())
+            ->method('generate')
+            ->with($this->getBundle(), $entity, $format, $fields)
+            ->willReturn(new EntityGeneratorResult('', '', ''))
+        ;
+
+        $tester = new CommandTester($command = $this->getCommand($generator));
+        $this->setInputs($tester, $command, $input);
+        $tester->execute($options);
+    }
+
     public function getInteractiveCommandData()
     {
         return array(
             array(array(), "Acme2BlogBundle:Blog/Post\n", array('Blog\\Post', 'annotation', array())),
             array(array('entity' => 'Acme2BlogBundle:Blog/Post'), '', array('Blog\\Post', 'annotation', array())),
             array(array(), "Acme2BlogBundle:Blog/Post\nyml\n\n", array('Blog\\Post', 'yml', array())),
-            array(array(), "Acme2BlogBundle:Blog/Post\nyml\ncreated_by\n\n255\nfalse\nfalse\ndescription\ntext\nfalse\ntrue\nupdated_at\ndatetime\ntrue\nfalse\nrating\ndecimal\n5\n3\nfalse\nfalse\n\n", array('Blog\\Post', 'yml', array(
+            array(array(), "Acme2BlogBundle:Blog/Post\nyml\ncreated_by\n\n255\nfalse\nfalse\ndescription\ntext\nfalse\ntrue\nupdated_at\n\ntrue\nfalse\nrating\ndecimal\n5\n3\nfalse\nfalse\n\n", array('Blog\\Post', 'yml', array(
                 array('fieldName' => 'createdBy', 'type' => 'string', 'length' => 255, 'columnName' => 'created_by'),
                 array('fieldName' => 'description', 'type' => 'text', 'unique' => true, 'columnName' => 'description'),
-                array('fieldName' => 'updatedAt', 'type' => 'datetimetz', 'nullable' => true, 'columnName' => 'updated_at'),
+                array('fieldName' => 'updatedAt', 'type' => 'datetime', 'nullable' => true, 'columnName' => 'updated_at'),
                 array('fieldName' => 'rating', 'type' => 'decimal', 'precision' => 5, 'scale' => 3, 'columnName' => 'rating'),
             ))),
+        );
+    }
+
+    public function getLegacyInteractiveCommandData()
+    {
+        return array(
             // Deprecated, to be removed in 4.0
             array(array('--entity' => 'Acme2BlogBundle:Blog/Post'), '', array('Blog\\Post', 'annotation', array())),
         );
@@ -58,6 +86,32 @@ class GenerateDoctrineEntityCommandTest extends GenerateCommandTest
      * @dataProvider getNonInteractiveCommandData
      */
     public function testNonInteractiveCommand($options, $expected)
+    {
+        list($entity, $format, $fields) = $expected;
+
+        $generator = $this->getGenerator();
+        $generator
+            ->expects($this->once())
+            ->method('generate')
+            ->with($this->getBundle(), $entity, $format, $fields)
+            ->willReturn(new EntityGeneratorResult('', '', ''))
+        ;
+        $generator
+            ->expects($this->any())
+            ->method('isReservedKeyword')
+            ->will($this->returnValue(false))
+        ;
+
+        $tester = new CommandTester($this->getCommand($generator));
+        $tester->execute($options, array('interactive' => false));
+    }
+
+    /**
+     * @group legacy
+     * @expectedDeprecation Using the "--entity" option has been deprecated since version 3.0 and will be removed in 4.0. Pass it as argument instead.
+     * @dataProvider getLegacyNonInteractiveCommandData
+     */
+    public function testLegacyNonInteractiveCommand($options, $expected)
     {
         list($entity, $format, $fields) = $expected;
 
@@ -88,6 +142,12 @@ class GenerateDoctrineEntityCommandTest extends GenerateCommandTest
                 array('fieldName' => 'description', 'type' => 'text'),
                 array('fieldName' => 'rating', 'type' => 'decimal', 'precision' => 7, 'scale' => 2),
             ))),
+        );
+    }
+
+    public function getLegacyNonInteractiveCommandData()
+    {
+        return array(
             // Deprecated, to be removed in 4.0
             array(array('--entity' => 'Acme2BlogBundle:Blog/Post'), array('Blog\\Post', 'annotation', array())),
             array(array('--entity' => 'Acme2BlogBundle:Blog/Post', '--format' => 'yml', '--fields' => 'created_by:string(255) updated_by:string(length=128 nullable=true) description:text rating:decimal(precision=7 scale=2)'), array('Blog\\Post', 'yml', array(
