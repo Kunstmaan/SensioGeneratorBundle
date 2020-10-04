@@ -12,9 +12,11 @@
 namespace Sensio\Bundle\GeneratorBundle\Tests\Command\AutoComplete;
 
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\Persistence\Mapping\Driver\MappingDriver;
+use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\GeneratorBundle\Command\AutoComplete\EntitiesAutoCompleter;
 
-class EntitiesAutoCompleterTest extends \PHPUnit_Framework_TestCase
+class EntitiesAutoCompleterTest extends TestCase
 {
     /**
      * @dataProvider getNamespaces
@@ -66,7 +68,7 @@ class EntitiesAutoCompleterTest extends \PHPUnit_Framework_TestCase
      */
     protected function getEntityManagerMock($aliases, $classes)
     {
-        $cache = $this->getMockBuilder('Doctrine\Common\Persistence\Mapping\Driver\MappingDriver')->getMock();
+        $cache = $this->getMockBuilder(MappingDriver::class)->getMock();
         $cache
             ->expects($this->any())
             ->method('getAllClassNames')

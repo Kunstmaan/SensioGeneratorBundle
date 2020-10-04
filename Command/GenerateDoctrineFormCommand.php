@@ -74,6 +74,8 @@ EOT
             $generator->getClassName(),
             $generator->getClassPath()
         ));
+
+        return 0;
     }
 
     protected function createGenerator()

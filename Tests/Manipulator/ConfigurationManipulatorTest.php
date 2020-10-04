@@ -11,16 +11,17 @@
 
 namespace Sensio\Bundle\GeneratorBundle\Tests\Generator;
 
+use PHPUnit\Framework\TestCase;
 use Sensio\Bundle\GeneratorBundle\Manipulator\ConfigurationManipulator;
 use Sensio\Bundle\GeneratorBundle\Model\Bundle;
 use Symfony\Component\Filesystem\Filesystem;
 
-class ConfigurationManipulatorTest extends \PHPUnit_Framework_TestCase
+class ConfigurationManipulatorTest extends TestCase
 {
     protected $filesystem;
     protected $tmpDir;
 
-    public function setUp()
+    public function setUp(): void
     {
         $this->tmpDir = sys_get_temp_dir().'/sf';
         $this->filesystem = new Filesystem();
@@ -28,7 +29,7 @@ class ConfigurationManipulatorTest extends \PHPUnit_Framework_TestCase
         $this->filesystem->mkdir($this->tmpDir);
     }
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $this->filesystem->remove($this->tmpDir);
     }

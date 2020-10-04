@@ -11,6 +11,7 @@
 
 namespace Sensio\Bundle\GeneratorBundle\Tests\Generator;
 
+use Doctrine\Persistence\ManagerRegistry;
 use Sensio\Bundle\GeneratorBundle\Generator\DoctrineEntityGenerator;
 
 class DoctrineEntityGeneratorTest extends GeneratorTest
@@ -137,7 +138,7 @@ class DoctrineEntityGeneratorTest extends GeneratorTest
         $strings = array_merge($strings, $otherStrings);
 
         foreach ($strings as $string) {
-            $this->assertContains($string, $content);
+            $this->assertStringContainsString($string, $content);
         }
     }
 
@@ -179,7 +180,7 @@ class DoctrineEntityGeneratorTest extends GeneratorTest
 
     public function getRegistry()
     {
-        $registry = $this->getMockBuilder('Symfony\Bridge\Doctrine\RegistryInterface')->getMock();
+        $registry = $this->getMockBuilder(ManagerRegistry::class)->getMock();
         $registry->expects($this->any())->method('getManager')->will($this->returnValue($this->getManager()));
         $registry->expects($this->any())->method('getAliasNamespace')->will($this->returnValue('Foo\\BarBundle\\Entity'));
 

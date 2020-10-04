@@ -33,7 +33,7 @@ class ControllerGeneratorTest extends GeneratorTest
             'class WelcomeController',
         );
         foreach ($strings as $string) {
-            $this->assertContains($string, $content);
+            $this->assertStringContainsString($string, $content);
         }
 
         $content = file_get_contents($this->tmpDir.'/Tests/Controller/WelcomeControllerTest.php');
@@ -42,7 +42,7 @@ class ControllerGeneratorTest extends GeneratorTest
             'class WelcomeControllerTest',
         );
         foreach ($strings as $string) {
-            $this->assertContains($string, $content);
+            $this->assertStringContainsString($string, $content);
         }
     }
 
@@ -82,7 +82,7 @@ class ControllerGeneratorTest extends GeneratorTest
             'return $this->render(\'FooBarBundle:Page:pages_list.html.twig\', array(',
         );
         foreach ($strings as $string) {
-            $this->assertContains($string, $content);
+            $this->assertStringContainsString($string, $content);
         }
     }
 
@@ -108,15 +108,15 @@ class ControllerGeneratorTest extends GeneratorTest
         }
 
         $content = file_get_contents($this->tmpDir.'/Controller/PageController.php');
-        $this->assertNotContains('@Route()', $content, 'Routing is done via a yml file');
+        $this->assertStringNotContainsString('@Route()', $content, 'Routing is done via a yml file');
 
-        $this->assertContains("return \$this->render('FooBarBundle:Page:showPage.html.php', array(", $content, 'Controller renders template');
+        $this->assertStringContainsString("return \$this->render('FooBarBundle:Page:showPage.html.php', array(", $content, 'Controller renders template');
 
         $content = file_get_contents($this->tmpDir.'/Resources/views/Page/showPage.html.php');
-        $this->assertContains($this->getBundle()->getName().':Page:showPage', $content);
+        $this->assertStringContainsString($this->getBundle()->getName().':Page:showPage', $content);
 
         $content = file_get_contents($this->tmpDir.'/Resources/config/routing.yml');
-        $this->assertContains("show_page:\n    path:     /{slug}\n    defaults: { _controller: FooBarBundle:Page:showPage }", $content);
+        $this->assertStringContainsString("show_page:\n    path:     /{slug}\n    defaults: { _controller: FooBarBundle:Page:showPage }", $content);
     }
 
     protected function getGenerator()
